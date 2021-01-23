@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+	<head>
+		<title>Pacman Game</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body 
+			{
+				margin: 0px;
+				background-color: #000000;
+            	overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="build/three.js"></script>
+		<script src="js/controls/OrbitControls.js"></script>
+		
+
+		<script>
+	
+			var camera, scene, renderer;
+			var  sphere , box ;
+			var pacman;
+			var ghostdirection = 1;
+			var ghostdirection2 = 1; 
+			
+			var frameMesh;
+
+			var foodeat1;
+            var foodeat2;
+            var foodeat3;
+			var foodeat4;
+			var foodeat5;
+
+			var light;
+			
+			init();
+			animate();
+
+			function init() {
+				scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 2000 );
+                camera.position.y=400;
+				camera.position.z=450;	
+
+
+
+				var control = new THREE.OrbitControls(camera);
+
+				var BoxGeo = new THREE.BoxGeometry(2100, 1000,2100); 
+			    var material = new THREE.MeshBasicMaterial({
+				map:  THREE.ImageUtils.loadTexture('Pac-Man.jpg'), 
+				side: THREE.BackSide
+			    });
+			    frameMesh = new THREE.Mesh(BoxGeo,material);
+			    scene.add(frameMesh);
+               /*________________________________________________________________________________________________________________________*/
+               //Borders Drawing
+				var geometry = new THREE.BoxGeometry(1060, 70, 15 );
+				var material = new THREE.MeshBasicMaterial({
+				map:  THREE.ImageUtils.loadTexture('Wooden-Crates-1280x720.jpg'), 
+				side: THREE.BackSide
+			    });
+				var cube1 = new THREE.Mesh( geometry,material );
+				cube1.position.x += 10;
+				cube1.position.y += 35;
+				cube1.position.z -= 350;
+				scene.add( cube1 );
+
+				var geometry2 = new THREE.BoxGeometry(1070, 70, 15 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube2 = new THREE.Mesh( geometry2,material );
+				cube2.position.x += 10;
+				cube2.position.y += 35;
+				cube2.position.z += 345;
+				scene.add( cube2 );
+
+				var geometry3 = new THREE.BoxGeometry(10, 70, 695 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube3 = new THREE.Mesh( geometry3,material );
+				cube3.position.x += 540;
+				cube3.position.y += 35;
+				cube3.position.z -= 10;
+				scene.add( cube3 );
+
+				var geometry4 = new THREE.BoxGeometry(10, 70, 695 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube4 = new THREE.Mesh( geometry4,material );
+				cube4.position.x -= 520;
+				cube4.position.y += 35;
+				cube4.position.z -= 10;
+				scene.add( cube4 );
+                /*dool a5er el borders el fel genab*/
+
+
+				//Maze
+
+                //awel wa7da men na7yet el shemal ta7t
+				var geometry5 = new THREE.BoxGeometry(35, 70, 200 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube5 = new THREE.Mesh( geometry5,material );
+				cube5.position.x -= 400;
+				cube5.position.y = 30;
+				cube5.position.z = 150;
+                scene.add( cube5 );
+                
+                //tany wa7da men na7yet el shemal ta7t
+				var geometry6 = new THREE.BoxGeometry(35, 70, 200 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube6 = new THREE.Mesh( geometry6,material );
+				cube6.position.x -= 250;
+				cube6.position.y = 30;
+				cube6.position.z = 150;
+                scene.add( cube6 );
+
+                //talet wa7da men na7yet el shemal ta7t
+				var geometry7 = new THREE.BoxGeometry(35, 70, 200 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube7 = new THREE.Mesh( geometry7,material );
+				cube7.position.x -= 100;
+				cube7.position.y = 30;
+				cube7.position.z = 150;
+                scene.add( cube7 );   
+                
+                //El shemal bel 3ard ta7t
+				var geometry8 = new THREE.BoxGeometry(380, 70, 40 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube8 = new THREE.Mesh( geometry8,material );
+				cube8.position.x -= 230;
+				cube8.position.y += 30;
+				cube8.position.z -= 50;
+                scene.add( cube8 );
+                
+                //El shemal bel 3ard fo2
+				var geometry9 = new THREE.BoxGeometry(380, 70, 40 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube9 = new THREE.Mesh( geometry9,material );
+				cube9.position.x -= 230;
+				cube9.position.y += 30;
+				cube9.position.z -= 200;
+                scene.add( cube9 );
+
+                //awel wa7da men na7yet el ymen fo2
+				var geometry10 = new THREE.BoxGeometry(35, 70, 200 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube10 = new THREE.Mesh( geometry10,material );
+				cube10.position.x += 400;
+				cube10.position.y = 30;
+				cube10.position.z -= 150;
+                scene.add( cube10 );
+                
+                //tany wa7da men na7yet el ymen fo2
+				var geometr11 = new THREE.BoxGeometry(35, 70, 200 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube11 = new THREE.Mesh( geometr11,material );
+				cube11.position.x += 250;
+				cube11.position.y = 30;
+				cube11.position.z -= 150;
+                scene.add( cube11 );
+
+                //talet wa7da men na7yet el ymen fo2
+				var geometry12 = new THREE.BoxGeometry(35, 70, 200 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube12 = new THREE.Mesh( geometry12,material );
+				cube12.position.x += 100;
+				cube12.position.y = 30;
+				cube12.position.z -= 150;
+                scene.add( cube12 ); 
+                
+                //El ymen bel 3ard fo2
+				var geometry13 = new THREE.BoxGeometry(380, 70, 40 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube13 = new THREE.Mesh( geometry13,material );
+				cube13.position.x += 230;
+				cube13.position.y += 30;
+				cube13.position.z += 50;
+                scene.add( cube13 );
+                
+                //El ymen bel 3ard ta7t
+				var geometry14 = new THREE.BoxGeometry(380, 70, 40 );
+				var texture = new THREE.TextureLoader().load( 'Wooden-Crates-1280x720.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				var cube14 = new THREE.Mesh( geometry14,material );
+				cube14.position.x += 230;
+				cube14.position.y += 30;
+				cube14.position.z += 200;
+                scene.add( cube14 );
+
+
+				/*____________________________________________________________________________________________________________________*/
+                //Pacman
+				var pacgeo = new THREE.SphereGeometry(30, 30, 30);
+				var texture = new THREE.TextureLoader().load( 'pacimg.png' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+				pacman = new THREE.Mesh(pacgeo,material);
+				pacman.position.y  = 38;
+				pacman.position.z  = 0;
+				pacman.position.x  = 0;
+				scene.add(pacman);
+
+				//plane
+				var planegeo = new THREE.BoxGeometry(1080,20,700);
+				var texture = new THREE.TextureLoader().load( 'AREA.jpg' );
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+                plane = new THREE.Mesh(planegeo,material);
+				plane.position.z -= 15;
+				plane.position.y += 0;
+				plane.position.x += 10;
+                scene.add(plane);
+
+				/*_______________________________________________________________________________________________________________________*/
+				//Dots
+				
+				//Dol el 3ala el shemal bel tool 
+				var dot1 = new THREE.SphereGeometry(9, 9, 9);
+				var material = new THREE.LineBasicMaterial({ color: 0x2AFFFF });
+                dot1 = new THREE.Mesh(dot1,material);
+				dot1.position.y  += 30;
+				dot1.position.z  += 280;
+				dot1.position.x  -= 470;
+                scene.add(dot1);
+            
+                //El fo2 bel 3ard
+                var dot7 = new THREE.SphereGeometry(9, 9, 9);
+                dot7 = new THREE.Mesh(dot7,material);
+				dot7.position.y  += 30;
+				dot7.position.z  -= 300;
+				dot7.position.x  += 300;
+                scene.add(dot7); 
+ 
+                var dot9 = new THREE.SphereGeometry(9, 9, 9);
+                dot9 = new THREE.Mesh(dot9,material);
+				dot9.position.y  += 30;
+				dot9.position.z  -= 300;
+				dot9.position.x  -= 300;
+                scene.add(dot9); 
+
+                //El ta7t bel 3ard
+                var dot11 = new THREE.SphereGeometry(9, 9, 9);
+                dot11 = new THREE.Mesh(dot11,material);
+				dot11.position.y  += 30;
+				dot11.position.z  += 300;
+				dot11.position.x  += 0;
+                scene.add(dot11); 
+
+				var dot12 = new THREE.SphereGeometry(9, 9, 9);
+                dot12 = new THREE.Mesh(dot12,material);
+				dot12.position.y  += 30;
+				dot12.position.z  += 280;
+				dot12.position.x  += 470;
+                scene.add(dot12);
+
+              /*_______________________________________________________________________________________________________________________*/
+               //Ghost
+               
+			   var ghost = new THREE.SphereGeometry(30, 30,30);
+			   var texture = new THREE.TextureLoader().load( 'ghost.png' );
+			   var material = new THREE.MeshBasicMaterial( { map: texture } );
+				ghost1 = new THREE.Mesh(ghost,material);
+				ghost1.position.y  = 38;
+				ghost1.position.z  -= 120;
+				ghost1.position.x  -= 150;
+				scene.add(ghost1);
+				
+				var ghostgeo = new THREE.SphereGeometry(30, 30,30);
+                var texture = new THREE.TextureLoader().load( 'ghost.png' );
+			    var material = new THREE.MeshBasicMaterial( { map: texture } );
+				ghost2 = new THREE.Mesh(ghostgeo,material);
+				ghost2.position.y  = 38;
+				ghost2.position.z  = 120;
+				ghost2.position.x  = 150;
+                scene.add(ghost2);
+
+               /*________________________________________________________________________________________________________________________*/
+			   /*LIGHT*/
+
+			   var light = new THREE.PointLight( 0xffffff, 1, 100000);
+			   light.position.x += 500;
+			   light.position.y += 500;
+			   light.position.z += 500;
+			   scene.add( light );
+
+
+
+
+                window.onkeypress = function(event)
+                {
+					var key = event.key.toUpperCase();
+                    if(key == 'S')
+                    {
+                        if(pacman.position.z<300)
+                        {
+                        pacman.position.z +=20;
+
+						}
+					}
+                    else if(key == 'W')
+                    {
+                        if(pacman.position.z>-300 )
+                        {
+                        pacman.position.z -= 20;
+
+						}
+					}
+                    else if(key == 'A')
+                    {
+                        if(pacman.position.x>-480)
+                        {
+                            pacman.position.x -= 20;
+ 
+						}
+					}
+                    else if(key == 'D')
+                    {
+                        if(pacman.position.x<500)
+                        {
+					    	pacman.position.x += 20;
+
+						}
+					}
+                    if(key =='A'||'D' || 'W'||'S')
+                    {
+                        if(dot1.position.x >= pacman.position.x && dot1.position.z == pacman.position.z)
+                        {
+                        foodeat1=scene.remove(dot1);
+                        }
+                        if(dot7.position.x == pacman.position.x && dot7.position.z == pacman.position.z)
+                        {
+                        foodeat2=scene.remove(dot7);
+                        }
+                        if(dot9.position.x == pacman.position.x && dot9.position.z == pacman.position.z)
+                        {
+                        foodeat3=scene.remove(dot9);
+                        }
+                        if(dot11.position.x == pacman.position.x && dot11.position.z == pacman.position.z)
+                        {
+                        foodeat4=scene.remove(dot11);
+                        }
+						if(dot12.position.x >= pacman.position.x && dot12.position.z == pacman.position.z)
+                        {
+                        foodeat5=scene.remove(dot12);
+					
+                        }
+
+                        if(foodeat1&&foodeat2&&foodeat3&&foodeat4&&foodeat5)
+                        {
+							alert("You Win");
+							alert("Press ctrl+R to restart game");
+                        }
+                    }	
+				}
+
+
+                renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement); 
+                
+         
+			}
+			
+
+			function animate()
+            {
+				renderer.render(scene,camera);
+
+				var pos1=pacman.position;
+				var pos2=ghost1.position;
+				var pos3=ghost2.position;
+
+				var d1=pos1.distanceTo(pos2);
+				var d2=pos1.distanceTo(pos3);
+
+				if(d1<=28 || d2<=28 )
+				{
+					alert("YOU LOSE");
+					alert("Please Press ctrl+R to restart a game");
+					scene.remove(pacman);
+					scene.remove(ghost1);
+					scene.remove(ghost2);
+				}
+
+				ghost1.position.x += ghostdirection * 5;
+				ghost2.position.x += ghostdirection2 * 5;
+                if(ghost1.position.x >= 50)
+                {
+                
+                  ghostdirection *=-1;
+            
+                }
+				if(ghost1.position.x <= -490){
+					ghostdirection *=-1;
+				}
+				if(ghost2.position.x >= 490)
+                {
+                
+                  ghostdirection2 *=-1;
+            
+                }
+				if(ghost2.position.x <= -60){
+					ghostdirection2 *=-1;
+				}
+				requestAnimationFrame(animate);
+			}
+
+		</script>
+
+	</body>
+</html>
